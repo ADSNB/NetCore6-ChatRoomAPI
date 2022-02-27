@@ -33,5 +33,28 @@ namespace NetCoreChatRoomAPI.Controllers
             })
             .ToArray();
         }
+
+        /*
+        [HttpGet(Name = "GetWeatherForecastAction")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(JsonErrorResultModel))]
+        public IActionResult GetWeatherForecastAction()
+        {
+            try
+            {
+                return Ok(Enumerable.Range(1, 5).Select(index => new WeatherForecast
+                {
+                    Date = DateTime.Now.AddDays(index),
+                    TemperatureC = Random.Shared.Next(-20, 55),
+                    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                })
+                .ToArray());
+            }
+            catch (Exception ex)
+            {
+                //Log.Error($"Controller: {_controllerName}; Método: {Request.Method}; Mensagem: {ex.Message} ; StackTrace: {ex.StackTrace};");
+                return StatusCode(StatusCodes.Status400BadRequest, JsonErrorResultModel.FromException(ex));
+            }
+        }*/
     }
 }
