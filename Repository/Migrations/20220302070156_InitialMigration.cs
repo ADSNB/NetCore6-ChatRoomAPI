@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class FirstMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,18 +52,38 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChatRoom",
+                name: "GroupChat",
                 schema: "dbo",
                 columns: table => new
                 {
-                    IdChatRoom = table.Column<int>(type: "int", nullable: false, comment: "Chat room ID")
+                    IdGroupChat = table.Column<int>(type: "int", nullable: false, comment: "Group chat ID")
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", nullable: false, comment: "Chat room name"),
+                    Name = table.Column<string>(type: "nvarchar(100)", nullable: false, comment: "Group chat name"),
+                    Description = table.Column<string>(type: "nvarchar(300)", nullable: false, comment: "Group chat description"),
+                    CreatedByUser = table.Column<string>(type: "nvarchar(300)", nullable: false, comment: "Group chat description"),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GetDate()", comment: "Record creation date")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChatRoom", x => x.IdChatRoom);
+                    table.PrimaryKey("PK_GroupChat", x => x.IdGroupChat);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProcessingQueue",
+                schema: "dbo",
+                columns: table => new
+                {
+                    IdProcessingQueue = table.Column<int>(type: "int", nullable: false, comment: "Processing queue ID")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodGroupChat = table.Column<string>(type: "nvarchar(100)", nullable: false, comment: "GroupChat id, for message callback"),
+                    CommandName = table.Column<string>(type: "nvarchar(100)", nullable: false, comment: "Executed command name"),
+                    CreatedByUser = table.Column<string>(type: "nvarchar(300)", nullable: false, comment: "Created / requested by user"),
+                    CodProcessingQueueStatus = table.Column<int>(type: "int", nullable: false, comment: "Process execution status"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GetDate()", comment: "Record creation date")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProcessingQueue", x => x.IdProcessingQueue);
                 });
 
             migrationBuilder.CreateTable(
@@ -172,6 +192,30 @@ namespace Repository.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "GroupChatMessage",
+                schema: "dbo",
+                columns: table => new
+                {
+                    IdGroupChatMessage = table.Column<int>(type: "int", nullable: false, comment: "Group chat message ID")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodGroupChat = table.Column<int>(type: "int", nullable: false, comment: "FK from GroupChat"),
+                    FromUser = table.Column<string>(type: "nvarchar(300)", nullable: false, comment: "User that sent the message"),
+                    Message = table.Column<string>(type: "nvarchar(300)", nullable: false, comment: "Message sent"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GetDate()", comment: "Record creation date")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupChatMessage", x => x.IdGroupChatMessage);
+                    table.ForeignKey(
+                        name: "FK_GroupChatMessage_GroupChat_CodGroupChat",
+                        column: x => x.CodGroupChat,
+                        principalSchema: "dbo",
+                        principalTable: "GroupChat",
+                        principalColumn: "IdGroupChat",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -210,6 +254,12 @@ namespace Repository.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupChatMessage_CodGroupChat",
+                schema: "dbo",
+                table: "GroupChatMessage",
+                column: "CodGroupChat");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -230,7 +280,11 @@ namespace Repository.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ChatRoom",
+                name: "GroupChatMessage",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "ProcessingQueue",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -238,6 +292,10 @@ namespace Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "GroupChat",
+                schema: "dbo");
         }
     }
 }

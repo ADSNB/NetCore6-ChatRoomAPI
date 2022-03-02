@@ -2,7 +2,7 @@
 
 namespace Repository.EntityRepository.Interfaces
 {
-    public interface IChatRoomRepository : IGenericRepository<ChatRoomEntity>
+    public interface IProcessingQueueRepository : IGenericRepository<ProcessingQueueEntity>
     {
     }
 }

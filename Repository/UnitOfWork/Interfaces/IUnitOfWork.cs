@@ -4,6 +4,8 @@ namespace Repository.UnitOfWork
 {
     public interface IUnitOfWork
     {
-        IChatRoomRepository ChatRoomRepository { get; }
+        IGroupChatRepository GroupChatRepository { get; }
+        IGroupChatMessageRepository GroupChatMessageRepository { get; }
+        IProcessingQueueRepository ProcessingQueueRepository { get; }
     }
 }

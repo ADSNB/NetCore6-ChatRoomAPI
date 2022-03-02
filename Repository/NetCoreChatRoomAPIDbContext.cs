@@ -14,12 +14,16 @@ namespace Repository
         {
         }
 
-        public DbSet<ChatRoomEntity> ChatRoom { get; set; }
+        public DbSet<GroupChatEntity> GroupChat { get; set; }
+        public DbSet<GroupChatMessageEntity> GroupChatMessage { get; set; }
+        public DbSet<ProcessingQueueEntity> ProcessingQueue { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfiguration(new ChatRoomTypeConfiguration(_schema));
+            builder.ApplyConfiguration(new GroupChatTypeConfiguration(_schema));
+            builder.ApplyConfiguration(new GroupChatMessageTypeConfiguration(_schema));
+            builder.ApplyConfiguration(new ProcessingQueueTypeConfiguration(_schema));
         }
     }
 }

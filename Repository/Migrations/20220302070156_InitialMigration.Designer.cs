@@ -12,8 +12,8 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(NetCoreChatRoomAPIDbContext))]
-    [Migration("20220227033532_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20220302070156_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -222,15 +222,20 @@ namespace Repository.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Repository.Entity.ChatRoomEntity", b =>
+            modelBuilder.Entity("Repository.Entity.GroupChatEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("IdChatRoom")
-                        .HasComment("Chat room ID");
+                        .HasColumnName("IdGroupChat")
+                        .HasComment("Group chat ID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CreatedByUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(300)")
+                        .HasComment("Group chat description");
 
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
@@ -238,14 +243,96 @@ namespace Repository.Migrations
                         .HasDefaultValueSql("GetDate()")
                         .HasComment("Record creation date");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(300)")
+                        .HasComment("Group chat description");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)")
-                        .HasComment("Chat room name");
+                        .HasComment("Group chat name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatRoom", "dbo");
+                    b.ToTable("GroupChat", "dbo");
+                });
+
+            modelBuilder.Entity("Repository.Entity.GroupChatMessageEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("IdGroupChatMessage")
+                        .HasComment("Group chat message ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CodGroupChat")
+                        .HasColumnType("int")
+                        .HasComment("FK from GroupChat");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()")
+                        .HasComment("Record creation date");
+
+                    b.Property<string>("FromUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(300)")
+                        .HasComment("User that sent the message");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(300)")
+                        .HasComment("Message sent");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CodGroupChat");
+
+                    b.ToTable("GroupChatMessage", "dbo");
+                });
+
+            modelBuilder.Entity("Repository.Entity.ProcessingQueueEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("IdProcessingQueue")
+                        .HasComment("Processing queue ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CodGroupChat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasComment("GroupChat id, for message callback");
+
+                    b.Property<int>("CodProcessingQueueStatus")
+                        .HasColumnType("int")
+                        .HasComment("Process execution status");
+
+                    b.Property<string>("CommandName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasComment("Executed command name");
+
+                    b.Property<string>("CreatedByUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(300)")
+                        .HasComment("Created / requested by user");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()")
+                        .HasComment("Record creation date");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProcessingQueue", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -297,6 +384,22 @@ namespace Repository.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Repository.Entity.GroupChatMessageEntity", b =>
+                {
+                    b.HasOne("Repository.Entity.GroupChatEntity", "GroupChat")
+                        .WithMany("GroupChatMessage")
+                        .HasForeignKey("CodGroupChat")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupChat");
+                });
+
+            modelBuilder.Entity("Repository.Entity.GroupChatEntity", b =>
+                {
+                    b.Navigation("GroupChatMessage");
                 });
 #pragma warning restore 612, 618
         }

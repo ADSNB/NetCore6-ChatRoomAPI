@@ -14,7 +14,9 @@ namespace Repository.UnitOfWork
             this.InitializeRepository(netCoreChatRoomAPIDbContext);
         }
 
-        public IChatRoomRepository ChatRoomRepository { get; }
+        public IGroupChatRepository GroupChatRepository { get; }
+        public IGroupChatMessageRepository GroupChatMessageRepository { get; }
+        public IProcessingQueueRepository ProcessingQueueRepository { get; }
 
         protected virtual void Dispose(bool disposing)
         {

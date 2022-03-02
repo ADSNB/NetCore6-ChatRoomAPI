@@ -40,6 +40,12 @@ namespace Repository.EntityRepository
             _dbContext.SaveChanges();
         }
 
+        public void Update(List<TEntity> entities)
+        {
+            _dbContext.UpdateRange(entities);
+            _dbContext.SaveChanges();
+        }
+
         public void Delete(int id)
         {
             var entity = GetById(id);

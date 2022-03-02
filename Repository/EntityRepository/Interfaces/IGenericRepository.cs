@@ -11,6 +11,8 @@ namespace Repository.EntityRepository.Interfaces
 
         void Update(TEntity entity);
 
+        void Update(List<TEntity> entities);
+
         void Delete(int id);
 
         //void TruncateDelete();
