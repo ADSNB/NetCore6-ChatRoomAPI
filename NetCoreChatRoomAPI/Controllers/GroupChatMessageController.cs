@@ -2,6 +2,8 @@
 using Domain.InputModel.GroupChatMessage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace NetCoreChatRoomAPI.Controllers
 {
@@ -24,6 +26,7 @@ namespace NetCoreChatRoomAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(JsonConvert.SerializeObject(ex));
                 return BadRequest();
             }
         }
@@ -38,6 +41,7 @@ namespace NetCoreChatRoomAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(JsonConvert.SerializeObject(ex));
                 return BadRequest(ex.Message);
             }
         }
@@ -52,6 +56,7 @@ namespace NetCoreChatRoomAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(JsonConvert.SerializeObject(ex));
                 return BadRequest(ex.Message);
             }
         }

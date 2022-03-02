@@ -2,6 +2,8 @@
 using Domain.InputModel.GroupChat;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace NetCoreChatRoomAPI.Controllers
 {
@@ -12,10 +14,7 @@ namespace NetCoreChatRoomAPI.Controllers
     {
         public GroupChatDomain _domain;
 
-        public GroupChatController(GroupChatDomain domain)
-        {
-            _domain = domain;
-        }
+        public GroupChatController(GroupChatDomain domain) => _domain = domain;
 
         [HttpGet]
         public IActionResult GetAllGroupChat()
@@ -27,6 +26,7 @@ namespace NetCoreChatRoomAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(JsonConvert.SerializeObject(ex));
                 return BadRequest(ex.Message);
             }
         }
@@ -41,6 +41,7 @@ namespace NetCoreChatRoomAPI.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error(JsonConvert.SerializeObject(ex));
                 return BadRequest(ex.Message);
             }
         }
