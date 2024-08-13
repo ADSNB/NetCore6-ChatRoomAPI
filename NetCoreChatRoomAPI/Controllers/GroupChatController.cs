@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.InputModel.GroupChat;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -12,9 +13,9 @@ namespace NetCoreChatRoomAPI.Controllers
     [AllowAnonymous]
     public class GroupChatController : ControllerBase
     {
-        public GroupChatDomain _domain;
+        public IGroupChatDomain _domain;
 
-        public GroupChatController(GroupChatDomain domain) => _domain = domain;
+        public GroupChatController(IGroupChatDomain domain) => _domain = domain;
 
         [HttpGet]
         public IActionResult GetAllGroupChat()
